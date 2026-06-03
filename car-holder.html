@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车载支架 | 项目作品集</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#111111',
+                        darkLight: '#1e1e1e',
+                        accent: '#ff9400',
+                        grayText: '#a0a0a0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .card-hover { @apply transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent/20; }
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { background: #111; color: #fff; }
+        .modal-fade { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- 顶部导航 -->
+    <header class="fixed w-full top-0 z-50 py-4 bg-dark/95 shadow-md">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="portfolio.html" class="text-2xl font-bold text-white">
+                <span class="text-accent">DESIGN</span>PORTFOLIO
+            </a>
+            <a href="portfolio.html" class="text-accent hover:underline">
+                <i class="fa-solid fa-arrow-left mr-2"></i>返回首页
+            </a>
+        </div>
+    </header>
+
+    <!-- 作品主体 -->
+    <section class="pt-32 pb-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h1 class="text-[clamp(2rem,6vw,3rem)] font-bold mb-4">车载支架 项目作品</h1>
+                <div class="w-20 h-1 bg-accent mx-auto"></div>
+                <p class="text-grayText mt-4 max-w-xl mx-auto">车载支架产品渲染、电商主图、详情页、场景视觉设计</p>
+            </div>
+
+            <!-- 作品网格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 作品项 复制增减即可 -->
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-darkLight">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="https://picsum.photos/800/600?random=20" alt="车载支架作品" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h4 class="text-xl font-semibold mb-2">车载手机支架 - 款式1</h4>
+                        <p class="text-grayText text-sm">产品渲染 / 电商视觉</p>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-darkLight">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="https://picsum.photos/800/600?random=21" alt="车载支架作品" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h4 class="text-xl font-semibold mb-2">车载手机支架 - 款式2</h4>
+                        <p class="text-grayText text-sm">场景合成 / 主图设计</p>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-darkLight">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="https://picsum.photos/800/600?random=22" alt="车载支架作品" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h4 class="text-xl font-semibold mb-2">车载支架详情页设计</h4>
+                        <p class="text-grayText text-sm">电商详情 / 版式设计</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 大图弹窗 -->
+    <div id="workModal" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4 modal-fade">
+        <button id="closeModal" class="absolute top-6 right-8 text-white text-3xl hover:text-accent">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img id="modalImg" src="" alt="作品大图" class="max-w-full max-h-[90vh] object-contain rounded-lg">
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="py-8 bg-darkLight border-t border-grayText/20 text-center text-grayText">
+        <p>© 2026 设计师个人作品集 All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const workItems = document.querySelectorAll('.work-item');
+        const workModal = document.getElementById('workModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeModal = document.getElementById('closeModal');
+
+        workItems.forEach(item => {
+            item.addEventListener('click', () => {
+                modalImg.src = item.querySelector('img').src;
+                workModal.classList.remove('hidden');
+                workModal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        closeModal.addEventListener('click', () => {
+            workModal.classList.add('hidden');
+            workModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        });
+        workModal.addEventListener('click', e => {
+            if(e.target === workModal){
+                workModal.classList.add('hidden');
+                workModal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
