@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设计师个人作品集 | Portfolio</title>
+    <!-- 外部资源引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind 全局配色配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#111111',
+                        darkLight: '#1e1e1e',
+                        accent: '#ff3c00', // 主题橙红色
+                        grayText: '#a0a0a0'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 自定义样式 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .card-hover {
+                @apply transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent/20;
+            }
+            .nav-active {
+                @apply text-accent border-b-2 border-accent;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .mason-item {
+                break-inside: avoid;
+                margin-bottom: 2rem;
+            }
+            /* 返回顶部按钮样式 */
+            .back-top-btn {
+                @apply bg-accent text-black font-medium px-8 py-3 rounded-full transition-all duration-300 cursor-pointer inline-block;
+            }
+            .back-top-btn:hover {
+                @apply scale-105; /* 悬浮轻微放大 */
+            }
+        }
+
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth; /* 全局平滑滚动 */
+        }
+        body {
+            background-color: #111111;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 弹窗淡入动画 */
+        .modal-fade {
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 首屏轮播样式 */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dot.active {
+            background: #ff3c00;
+            transform: scale(1.2);
+        }
+
+        /* 3列瀑布流 - 无高度限制，展示全部图片 */
+        .masonry-wrap {
+            column-count: 3;
+            column-gap: 2rem;
+        }
+        /* 移动端自动切换为单列 */
+        @media (max-width: 768px) {
+            .masonry-wrap {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- 顶部导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 py-4">
+        <div class="container mx-auto px-6 md:px-12 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-white">
+                <span class="text-accent">DESIGN</span>PORTFOLIO
+            </a>
+            <!-- 桌面端导航 -->
+            <nav class="hidden md:flex gap-8 text-lg">
+                <a href="#home" class="nav-link py-1 hover:text-accent transition-colors">首页</a>
+                <a href="#works" class="nav-link py-1 hover:text-accent transition-colors">精选作品</a>
+                <a href="#projects" class="nav-link py-1 hover:text-accent transition-colors">项目分类</a>
+                <a href="#about-contact" class="nav-link py-1 hover:text-accent transition-colors">联系合作</a>
+            </nav>
+            <!-- 移动端菜单按钮 -->
+            <button id="menuBtn" class="md:hidden text-2xl text-white">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <!-- 移动端导航菜单 -->
+        <div id="mobileMenu" class="md:hidden hidden bg-darkLight mt-4 py-6 px-6 modal-fade">
+            <div class="flex flex-col gap-4 text-lg">
+                <a href="#home" class="mobile-link py-2 hover:text-accent">首页</a>
+                <a href="#works" class="mobile-link py-2 hover:text-accent">精选作品</a>
+                <a href="#projects" class="mobile-link py-2 hover:text-accent">项目分类</a>
+                <a href="#about-contact" class="mobile-link py-2 hover:text-accent">联系合作</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 首屏轮播区域 -->
+    <section id="home" class="carousel">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide"><img src="portfolio-PIC/design-1.jpg" alt="轮播图1"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-2.jpg" alt="轮播图2"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-3.jpg" alt="轮播图3"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-4.jpg" alt="轮播图4"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-5.jpg" alt="轮播图5"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-6.jpg" alt="轮播图6"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-7.jpg" alt="轮播图7"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-8.jpg" alt="轮播图8"></div>
+            <div class="carousel-slide"><img src="portfolio-PIC/design-9.jpg" alt="轮播图9"></div>
+        </div>
+
+        <!-- 居中标题 | 单词首字母橙红色 -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full text-center">
+            <h1 class="text-[clamp(3rem,12vw,7.2rem)] font-bold text-white tracking-wider">
+                <span class="text-accent">E</span>xclusive <span class="text-accent">V</span>isual <span class="text-accent">D</span>isplay
+            </h1>
+        </div>
+
+        <!-- 轮播指示器圆点 -->
+        <div class="carousel-dots" id="carouselDots">
+            <span class="dot active" data-index="0"></span>
+            <span class="dot" data-index="1"></span>
+            <span class="dot" data-index="2"></span>
+            <span class="dot" data-index="3"></span>
+            <span class="dot" data-index="4"></span>
+            <span class="dot" data-index="5"></span>
+            <span class="dot" data-index="6"></span>
+            <span class="dot" data-index="7"></span>
+            <span class="dot" data-index="8"></span>
+        </div>
+
+        <!-- 向下滚动提示 -->
+        <div class="absolute bottom-16 left-1/2 -translate-x-1/2 animate-bounce z-10">
+            <i class="fa-solid fa-chevron-down text-white text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- 精选作品区域（24张图片：nice-1 ~ nice-24，路径不变） -->
+    <section id="works" class="py-24 bg-dark">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,5vw,2.5rem)] font-bold mb-4">精选作品集</h2>
+                <div class="w-20 h-1 bg-accent mx-auto"></div>
+            </div>
+
+            <!-- 3列瀑布流容器，完整展示24张作品 -->
+            <div class="masonry-wrap">
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-1.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-2.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-3.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-4.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-5.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-6.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-7.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-8.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-9.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-10.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-11.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-12.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-13.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-14.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-15.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-16.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-17.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-18.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-19.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-20.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-21.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-22.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-23.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card card-hover rounded-xl overflow-hidden bg-dark mason-item">
+                    <div class="relative group cursor-pointer work-item">
+                        <img src="jingxuan/nice-24.jpg" alt="作品" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品大图弹窗预览 -->
+    <div id="workModal" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4 modal-fade">
+        <button id="closeModal" class="absolute top-6 right-8 text-3xl text-white hover:text-accent">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img id="modalImg" class="max-w-full max-h-[90vh] object-contain rounded-lg">
+    </div>
+
+    <!-- 项目作品板块（已1:1对应你的文件夹名） -->
+    <section id="projects" class="py-24 bg-darkLight">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,5vw,2.5rem)] font-bold mb-4">项目作品</h2>
+                <div class="w-20 h-1 bg-accent mx-auto"></div>
+            </div>
+
+            <!-- 分类切换按钮（已绑定真实文件夹名） -->
+            <div class="flex flex-wrap justify-center gap-5 mb-16" id="projectTabWrap">
+                <button class="project-tab px-8 py-3 rounded-full bg-accent text-dark font-medium card-hover" data-target="car-holder">车载支架</button>
+                <button class="project-tab px-8 py-3 rounded-full bg-darkLight text-white border border-grayText/30 hover:border-accent card-hover" data-target="3c-product">3C产品</button>
+                <button class="project-tab px-8 py-3 rounded-full bg-darkLight text-white border border-grayText/30 hover:border-accent card-hover" data-target="home-living">生活家居</button>
+                <button class="project-tab px-8 py-3 rounded-full bg-darkLight text-white border border-grayText/30 hover:border-accent card-hover" data-target="aigc-works">AIGC</button>
+                <button class="project-tab px-8 py-3 rounded-full bg-darkLight text-white border border-grayText/30 hover:border-accent card-hover" data-target="other-works">其他作品</button>
+            </div>
+
+            <!-- 分类内容区域（路径已完全修正） -->
+            <div class="project-content-wrapper">
+                <!-- 车载支架：car-holder/CAR-1.jpg -->
+                <div class="project-content active" data-id="car-holder">
+                    <div class="flex justify-center">
+                        <div class="rounded-xl overflow-hidden border-2 border-accent/30 card-hover cursor-pointer">
+                            <a href="car-holder.html" target="_blank">
+                                <img src="car-holder/CAR-1.jpg" alt="车载支架" class="w-full h-full object-cover" onerror="this.style.border='2px solid red'; this.alt='图片加载失败，请检查路径：car-holder/CAR-1.jpg'">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 3C产品：3c-product/3C-1.jpg -->
+                <div class="project-content hidden" data-id="3c-product">
+                    <div class="flex justify-center">
+                        <div class="rounded-xl overflow-hidden border-2 border-accent/30 card-hover cursor-pointer">
+                            <a href="3c-product.html" target="_blank">
+                                <img src="3c-product/3C-1.jpg" alt="3C产品" class="w-full h-full object-cover" onerror="this.style.border='2px solid red'; this.alt='图片加载失败，请检查路径：3c-product/3C-1.jpg'">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 生活家居：home-living/HOME-1.jpg -->
+                <div class="project-content hidden" data-id="home-living">
+                    <div class="flex justify-center">
+                        <div class="rounded-xl overflow-hidden border-2 border-accent/30 card-hover cursor-pointer">
+                            <a href="home-living.html" target="_blank">
+                                <img src="home-living/HOME-1.jpg" alt="生活家居" class="w-full h-full object-cover" onerror="this.style.border='2px solid red'; this.alt='图片加载失败，请检查路径：home-living/HOME-1.jpg'">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- AIGC：aigc-works/AIGC-1.jpg （已修正文件夹名） -->
+                <div class="project-content hidden" data-id="aigc-works">
+                    <div class="flex justify-center">
+                        <div class="rounded-xl overflow-hidden border-2 border-accent/30 card-hover cursor-pointer">
+                            <a href="aigc-works.html" target="_blank">
+                                <img src="aigc-works/AIGC-1.jpg" alt="AIGC作品" class="w-full h-full object-cover" onerror="this.style.border='2px solid red'; this.alt='图片加载失败，请检查路径：aigc-works/AIGC-1.jpg'">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 其他作品：other-works/OTHER-1.jpg -->
+                <div class="project-content hidden" data-id="other-works">
+                    <div class="flex justify-center">
+                        <div class="rounded-xl overflow-hidden border-2 border-accent/30 card-hover cursor-pointer">
+                            <a href="other-works.html" target="_blank">
+                                <img src="other-works/OTHER-1.jpg" alt="其他作品" class="w-full h-full object-cover" onerror="this.style.border='2px solid red'; this.alt='图片加载失败，请检查路径：other-works/OTHER-1.jpg'">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系合作板块（含返回顶部按钮） -->
+    <section id="about-contact" class="py-24 bg-dark">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,5vw,2.5rem)] font-bold mb-4">联系合作</h2>
+                <div class="w-20 h-1 bg-accent mx-auto"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <div class="flex justify-center mb-8">
+                        <div class="w-72 h-72 md:w-80 md:h-80 rounded-2xl overflow-hidden border-2 border-accent/30 card-hover">
+                            <img src="portfolio-PIC/WXXX.png" alt="微信二维码" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <p class="text-grayText leading-loose mb-6">
+                        深耕电商产品视觉、3C数码、家居产品视觉设计多年，擅长产品渲染、主图、详情页、创意视觉及AIGC艺术创作。
+                    </p>
+                    <p class="text-grayText leading-loose mb-8">
+                        设计理念：结合商业需求与视觉美学，突出产品卖点，打造高质感视觉作品。
+                    </p>
+                </div>
+
+                <div class="order-1 md:order-2">
+                    <h3 class="text-2xl font-semibold mb-6">合作咨询</h3>
+                    <p class="text-grayText leading-loose mb-8">
+                        欢迎设计合作、项目外包、行业交流。
+                    </p>
+                    <div class="space-y-6 mb-10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                                <i class="fa-solid fa-phone text-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-grayText text-sm">电话</p>
+                                <p class="text-lg">138-0000-0000</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                                <i class="fa-brands fa-weixin text-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-grayText text-sm">微信</p>
+                                <p class="text-lg">HX17864395695</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <p class="text-grayText mb-4">作品平台</p>
+                        <a href="https://www.zcool.com.cn/u/20313222" target="_blank" class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-darkLight border border-accent/30 hover:bg-accent hover:text-dark transition-all card-hover">
+                            <i class="fa-brands fa-zcool text-xl"></i>
+                            <span>叫大雄好了</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 返回顶部按钮：橙红底色、黑色文字、悬浮放大 -->
+            <div class="text-center mt-20">
+                <a href="#home" class="back-top-btn">返回顶部</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="py-8 bg-darkLight border-t border-grayText/20">
+        <div class="container mx-auto px-6 text-center text-grayText">
+            <p>© 2026 设计师个人作品集 All Rights Reserved.</p>
+            <p class="text-sm mt-2">用心设计 · 创造价值</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 交互脚本 -->
+    <script>
+        // 全局定时器配置
+        const PLAY_INTERVAL = 4000;    // 轮播基础间隔 4秒
+        const HOVER_DELAY = 3000;      // 鼠标移入暂停时长 3秒
+        let mainTimer = null;
+        let hoverDelayTimer = null;
+        // 新增：项目分类轮播配置
+        const PROJECT_CAROUSEL_INTERVAL = 5000; // 项目分类自动切换间隔（5秒）
+        let projectCarouselTimer = null;        // 项目分类轮播定时器
+        let currentProjectIndex = 0;            // 当前激活的项目分类索引
+
+        // 1. 导航栏滚动变色
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('bg-dark/95', window.scrollY > 50);
+            navbar.classList.toggle('shadow-md', window.scrollY > 50);
+        });
+
+        // 2. 移动端菜单切换
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = menuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                const icon = menuBtn.querySelector('i');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            });
+        });
+
+        // 3. 作品大图弹窗预览
+        const workItems = document.querySelectorAll('.work-item');
+        const workModal = document.getElementById('workModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeModal = document.getElementById('closeModal');
+        workItems.forEach(item => {
+            item.addEventListener('click', () => {
+                modalImg.src = item.querySelector('img').src;
+                workModal.classList.remove('hidden');
+                workModal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        closeModal.addEventListener('click', () => {
+            workModal.classList.add('hidden');
+            workModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        });
+        workModal.addEventListener('click', e => {
+            if (e.target === workModal) closeModal.click();
+        });
+
+        // 4. 项目分类切换（强化版 + 自动轮播）
+        const projectTabs = document.querySelectorAll('.project-tab');
+        const projectContents = document.querySelectorAll('.project-content');
+        const projectTabWrap = document.getElementById('projectTabWrap'); // 分类按钮容器
+
+        // 切换分类的核心函数
+        function switchProjectTab(index) {
+            // 1. 重置所有按钮样式
+            projectTabs.forEach(t => {
+                t.classList.remove('bg-accent', 'text-dark');
+                t.classList.add('bg-darkLight', 'text-white', 'border', 'border-grayText/30');
+            });
+            // 2. 激活当前按钮
+            projectTabs[index].classList.add('bg-accent', 'text-dark');
+            projectTabs[index].classList.remove('bg-darkLight', 'text-white', 'border', 'border-grayText/30');
+            // 3. 获取目标分类ID
+            const targetId = projectTabs[index].getAttribute('data-target');
+            // 4. 隐藏所有内容，显示当前分类
+            projectContents.forEach(content => {
+                content.classList.add('hidden');
+                if (content.getAttribute('data-id') === targetId) {
+                    content.classList.remove('hidden');
+                }
+            });
+            // 更新当前索引
+            currentProjectIndex = index;
+        }
+
+        // 绑定手动点击事件
+        projectTabs.forEach((tab, idx) => {
+            tab.addEventListener('click', () => {
+                switchProjectTab(idx);
+                // 手动点击后重置轮播定时器（避免切换冲突）
+                resetProjectCarouselTimer();
+            });
+        });
+
+        // 项目分类自动轮播函数
+        function startProjectCarousel() {
+            projectCarouselTimer = setInterval(() => {
+                // 计算下一个索引（循环）
+                currentProjectIndex = (currentProjectIndex + 1) % projectTabs.length;
+                switchProjectTab(currentProjectIndex);
+            }, PROJECT_CAROUSEL_INTERVAL);
+        }
+
+        // 重置项目分类轮播定时器
+        function resetProjectCarouselTimer() {
+            clearInterval(projectCarouselTimer);
+            startProjectCarousel();
+        }
+
+        // 鼠标悬停在分类区域时暂停轮播，离开后恢复
+        projectTabWrap.addEventListener('mouseenter', () => {
+            clearInterval(projectCarouselTimer);
+        });
+        projectTabWrap.addEventListener('mouseleave', () => {
+            resetProjectCarouselTimer();
+        });
+
+        // 初始化项目分类轮播
+        startProjectCarousel();
+
+        // 5. 首屏轮播核心逻辑：移入暂停3秒后自动播放
+        const carouselTrack = document.getElementById('carouselTrack');
+        const dots = document.querySelectorAll('.dot');
+        const slideCount = dots.length;
+        let currentIndex = 0;
+
+        function goToSlide(index) {
+            carouselTrack.style.transform = `translateX(-${index * 100}%)`;
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[index].classList.add('active');
+            currentIndex = index;
+        }
+
+        function startAutoPlay() {
+            clearInterval(mainTimer);
+            mainTimer = setInterval(() => {
+                currentIndex = (currentIndex + 1) % slideCount;
+                goToSlide(currentIndex);
+            }, PLAY_INTERVAL);
+        }
+
+        // 初始化轮播
+        startAutoPlay();
+
+        const carouselWrap = document.querySelector('.carousel');
+        carouselWrap.addEventListener('mouseenter', () => {
+            clearInterval(mainTimer);
+            clearTimeout(hoverDelayTimer);
+            hoverDelayTimer = setTimeout(() => {
+                startAutoPlay();
+            }, HOVER_DELAY);
+        });
+
+        // 圆点手动切换
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => goToSlide(idx));
+        });
+
+        // 页面卸载销毁所有定时器，防止内存泄漏
+        window.addEventListener('beforeunload', () => {
+            clearInterval(mainTimer);
+            clearTimeout(hoverDelayTimer);
+            clearInterval(projectCarouselTimer); // 新增：销毁项目分类轮播定时器
+        });
+    </script>
+</body>
+</html>
